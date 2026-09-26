@@ -1,0 +1,1813 @@
+<Window
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:PsychoLauncher"
+    x:Class="PsychoLauncher.MainWindow"
+    Title="Pop Launcher"
+    Width="1050"
+    Height="650"
+    WindowDecorations="None"
+    WindowStartupLocation="CenterScreen"
+    PointerPressed="Window_PointerPressed"
+    Background="#FF12121A">
+
+    <!-- ======================================================================================================================== -->
+    <!-- 🎨 SECTION 1: COLOR PALETTE & RESOURCES -->
+    <!-- ======================================================================================================================== -->
+    <Window.Resources>
+        
+        <SolidColorBrush
+            x:Key="Text_Light"
+            Color="#FFF8F9FA" />
+            
+        <SolidColorBrush
+            x:Key="Text_Muted"
+            Color="#FFA0AAB2" />
+            
+        <SolidColorBrush
+            x:Key="Text_DarkBase"
+            Color="#FF12121A" />
+            
+        <SolidColorBrush
+            x:Key="Glass_Dark"
+            Color="#801E1E2C" />
+            
+        <SolidColorBrush
+            x:Key="Glass_Dark_Hover"
+            Color="#B32A2A3C" />
+            
+        <SolidColorBrush
+            x:Key="Glass_Panel"
+            Color="#B30F0F15" />
+            
+        <SolidColorBrush
+            x:Key="Glass_Light_Overlay"
+            Color="#1AFFFFFF" />
+
+        <SolidColorBrush
+            x:Key="C_Pink"
+            Color="#FFFC7EC6" />
+            
+        <SolidColorBrush
+            x:Key="C_Cyan"
+            Color="#FF7EF1FC" />
+            
+        <SolidColorBrush
+            x:Key="C_Yellow"
+            Color="#FFFCEC7E" />
+            
+        <SolidColorBrush
+            x:Key="Border_Subtle"
+            Color="#20FFFFFF" />
+            
+        <SolidColorBrush
+            x:Key="Border_Hover"
+            Color="#40FFFFFF" />
+            
+        <SolidColorBrush
+            x:Key="Border_Active"
+            Color="#60FFFFFF" />
+            
+        <SolidColorBrush
+            x:Key="Shadow_Base"
+            Color="#A0000000" />
+            
+        <SolidColorBrush
+            x:Key="Shadow_Heavy"
+            Color="#D0000000" />
+            
+    </Window.Resources>
+
+    <!-- ======================================================================================================================== -->
+    <!-- Window Background Gradient Definition -->
+    <!-- ======================================================================================================================== -->
+    <Window.Background>
+        
+        <LinearGradientBrush
+            StartPoint="0%,0%"
+            EndPoint="100%,100%">
+            
+            <GradientStop
+                Offset="0"
+                Color="#FF12121A" />
+                
+            <GradientStop
+                Offset="0.5"
+                Color="#FF1A1A24" />
+                
+            <GradientStop
+                Offset="1"
+                Color="#FF0F0F15" />
+                
+        </LinearGradientBrush>
+        
+    </Window.Background>
+
+    <!-- ======================================================================================================================== -->
+    <!-- ✨ SECTION 2: GLOBAL STYLES & ANIMATIONS -->
+    <!-- ======================================================================================================================== -->
+    <Window.Styles>
+        
+        <!-- ListBoxItem Selection Override -->
+        <Style
+            Selector="ListBoxItem:selected /template/ ContentPresenter#PART_ContentPresenter">
+            
+            <Setter
+                Property="Background"
+                Value="Transparent" />
+                
+        </Style>
+        
+        <!-- ListBoxItem Hover Override -->
+        <Style
+            Selector="ListBoxItem:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            
+            <Setter
+                Property="Background"
+                Value="Transparent" />
+                
+        </Style>
+        
+        <!-- ======================================================================================================================== -->
+        <!-- 🃏 GameCard Default State (プルプル対策版) -->
+        <!-- ======================================================================================================================== -->
+        <Style
+            Selector="ListBoxItem Border.GameCard">
+            
+            <Setter
+                Property="Background"
+                Value="{DynamicResource Glass_Dark}" />
+                
+            <Setter
+                Property="CornerRadius"
+                Value="24" />
+                
+            <Setter
+                Property="BoxShadow"
+                Value="0 15 40 0 #80000000" />
+                
+            <Setter
+                Property="Margin"
+                Value="10,10,20,20" />
+                
+            <Setter
+                Property="BorderBrush"
+                Value="{DynamicResource Border_Subtle}" />
+                
+            <Setter
+                Property="BorderThickness"
+                Value="1" />
+                
+            <Setter
+                Property="RenderTransform"
+                Value="translateY(0px)" />
+                
+            <Setter
+                Property="Transitions">
+                
+                <Transitions>
+                    
+                    <BoxShadowsTransition
+                        Property="BoxShadow"
+                        Duration="0:0:0.2" />
+                        
+                    <BrushTransition
+                        Property="BorderBrush"
+                        Duration="0:0:0.2" />
+                        
+                    <TransformOperationsTransition
+                        Property="RenderTransform"
+                        Duration="0:0:0.2" />
+                        
+                </Transitions>
+                
+            </Setter>
+            
+        </Style>
+
+        <Style
+            Selector="ListBoxItem:pointerover Border.GameCard">
+            
+            <Setter
+                Property="BoxShadow"
+                Value="0 15 45 0 #307EF1FC" />
+                
+            <Setter
+                Property="BorderBrush"
+                Value="{DynamicResource Border_Hover}" />
+                
+            <Setter
+                Property="RenderTransform"
+                Value="translateY(-3px)" />
+                
+        </Style>
+
+        <Style
+            Selector="ListBoxItem:selected Border.GameCard">
+            
+            <Setter
+                Property="Background"
+                Value="{DynamicResource Glass_Dark_Hover}" />
+                
+            <Setter
+                Property="BoxShadow"
+                Value="0 20 50 0 #60FC7EC6" />
+                
+            <Setter
+                Property="BorderBrush"
+                Value="{DynamicResource C_Pink}" />
+                
+            <Setter
+                Property="RenderTransform"
+                Value="translateY(-5px)" />
+                
+        </Style>
+
+        <Style
+            Selector="TextBlock.BlinkingCursor">
+            
+            <Style.Animations>
+                
+                <Animation
+                    Duration="0:0:1"
+                    IterationCount="Infinite">
+                    
+                    <KeyFrame
+                        Cue="0%">
+                        
+                        <Setter
+                            Property="Opacity"
+                            Value="1.0" />
+                            
+                    </KeyFrame>
+                    
+                    <KeyFrame
+                        Cue="50%">
+                        
+                        <Setter
+                            Property="Opacity"
+                            Value="0.0" />
+                            
+                    </KeyFrame>
+                    
+                    <KeyFrame
+                        Cue="100%">
+                        
+                        <Setter
+                            Property="Opacity"
+                            Value="1.0" />
+                            
+                    </KeyFrame>
+                    
+                </Animation>
+                
+            </Style.Animations>
+            
+        </Style>
+
+        <Style
+            Selector="Button.Clean">
+            
+            <Setter
+                Property="Background"
+                Value="Transparent" />
+                
+            <Setter
+                Property="BorderThickness"
+                Value="0" />
+                
+            <Setter
+                Property="Padding"
+                Value="0" />
+                
+            <Setter
+                Property="HorizontalAlignment"
+                Value="Stretch" />
+                
+            <Setter
+                Property="VerticalAlignment"
+                Value="Stretch" />
+                
+            <Setter
+                Property="HorizontalContentAlignment"
+                Value="Center" />
+                
+            <Setter
+                Property="VerticalContentAlignment"
+                Value="Center" />
+                
+            <Setter
+                Property="CornerRadius"
+                Value="99" />
+                
+        </Style>
+        
+        <Style
+            Selector="Button.Clean:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+            
+            <Setter
+                Property="Background"
+                Value="Transparent" />
+                
+            <Setter
+                Property="BorderThickness"
+                Value="0" />
+                
+        </Style>
+        
+        <Style
+            Selector="Button.Clean:pressed /template/ ContentPresenter#PART_ContentPresenter">
+            
+            <Setter
+                Property="Background"
+                Value="Transparent" />
+                
+            <Setter
+                Property="Opacity"
+                Value="0.6" />
+                
+        </Style>
+
+        <Style
+            Selector="TextBox.Clean">
+            
+            <Setter
+                Property="Background"
+                Value="Transparent" />
+                
+            <Setter
+                Property="BorderThickness"
+                Value="0" />
+                
+            <Setter
+                Property="Foreground"
+                Value="{DynamicResource Text_Light}" />
+                
+            <Setter
+                Property="CaretBrush"
+                Value="{DynamicResource C_Cyan}" />
+                
+            <Setter
+                Property="SelectionBrush"
+                Value="{DynamicResource C_Pink}" />
+                
+        </Style>
+        
+        <Style
+            Selector="TextBox.Clean:pointerover /template/ Border#PART_BorderElement">
+            
+            <Setter
+                Property="Background"
+                Value="Transparent" />
+                
+            <Setter
+                Property="BorderThickness"
+                Value="0" />
+                
+        </Style>
+        
+        <Style
+            Selector="TextBox.Clean:focus /template/ Border#PART_BorderElement">
+            
+            <Setter
+                Property="Background"
+                Value="Transparent" />
+                
+            <Setter
+                Property="BorderThickness"
+                Value="0" />
+                
+        </Style>
+
+        <Style
+            Selector="Border.GlassWrapper">
+            
+            <Setter
+                Property="Background"
+                Value="{DynamicResource Glass_Dark}" />
+                
+            <Setter
+                Property="CornerRadius"
+                Value="99" />
+                
+            <Setter
+                Property="BoxShadow"
+                Value="0 10 25 0 #A0000000" />
+                
+            <Setter
+                Property="BorderBrush"
+                Value="{DynamicResource Border_Subtle}" />
+                
+            <Setter
+                Property="BorderThickness"
+                Value="1" />
+                
+            <Setter
+                Property="Transitions">
+                
+                <Transitions>
+                    
+                    <BoxShadowsTransition
+                        Property="BoxShadow"
+                        Duration="0:0:0.2" />
+                        
+                    <BrushTransition
+                        Property="Background"
+                        Duration="0:0:0.2" />
+                        
+                    <BrushTransition
+                        Property="BorderBrush"
+                        Duration="0:0:0.2" />
+                        
+                </Transitions>
+                
+            </Setter>
+            
+        </Style>
+        
+        <Style
+            Selector="Border.GlassWrapper:pointerover">
+            
+            <Setter
+                Property="BoxShadow"
+                Value="0 15 30 0 #C0000000" />
+                
+            <Setter
+                Property="Background"
+                Value="{DynamicResource Glass_Dark_Hover}" />
+                
+            <Setter
+                Property="BorderBrush"
+                Value="{DynamicResource Border_Hover}" />
+                
+        </Style>
+
+        <Style
+            Selector="Border.PrimaryAction">
+            
+            <Setter
+                Property="CornerRadius"
+                Value="99" />
+                
+            <Setter
+                Property="BoxShadow"
+                Value="0 12 30 0 #A0000000, 0 5 20 0 #607EF1FC" />
+                
+            <Setter
+                Property="Transitions">
+                
+                <Transitions>
+                    
+                    <BoxShadowsTransition
+                        Property="BoxShadow"
+                        Duration="0:0:0.2" />
+                        
+                </Transitions>
+                
+            </Setter>
+            
+        </Style>
+        
+        <Style
+            Selector="Border.PrimaryAction:pointerover">
+            
+            <Setter
+                Property="BoxShadow"
+                Value="0 15 35 0 #C0000000, 0 8 30 0 #A07EF1FC" />
+                
+        </Style>
+        
+        <Style
+            Selector="ScrollViewer">
+            
+            <Setter
+                Property="HorizontalScrollBarVisibility"
+                Value="Disabled" />
+                
+            <Setter
+                Property="VerticalScrollBarVisibility"
+                Value="Auto" />
+                
+        </Style>
+        
+        <Style
+            Selector="ScrollBar:vertical">
+            
+            <Setter
+                Property="Width"
+                Value="8" />
+                
+        </Style>
+
+    </Window.Styles>
+
+    <!-- ======================================================================================================================== -->
+    <!-- 🌐 SECTION 3: MAIN LAYOUT GRID -->
+    <!-- ======================================================================================================================== -->
+    <Grid>
+        
+        <Grid
+            RowDefinitions="Auto,*,Auto"
+            Margin="30,50,30,30"
+            Name="DashboardLayer"
+            IsVisible="False">
+            
+            <Grid
+                Grid.Row="0"
+                ColumnDefinitions="Auto,*,Auto"
+                Margin="0,0,0,30">
+                
+                <Border
+                    Grid.Column="0"
+                    Classes="GlassWrapper">
+                    
+                    <Button
+                        Classes="Clean"
+                        Click="BtnBackHome_Click"
+                        Padding="25,12"
+                        Cursor="Hand">
+                        
+                        <StackPanel
+                            Orientation="Horizontal"
+                            Spacing="10">
+                            
+                            <Path
+                                Data="M20,11V13H8L13.5,18.5L12.08,19.92L4.16,12L12.08,4.08L13.5,5.5L8,11H20Z"
+                                Fill="{DynamicResource Text_Light}"
+                                Width="16"
+                                Height="16"
+                                Stretch="Uniform" />
+                                
+                            <TextBlock
+                                Text="BACK"
+                                Foreground="{DynamicResource Text_Light}"
+                                FontWeight="Black"
+                                FontSize="16"
+                                LetterSpacing="1"
+                                VerticalAlignment="Center" />
+                                
+                        </StackPanel>
+                        
+                    </Button>
+                    
+                </Border>
+                
+                <Border
+                    Grid.Column="1"
+                    Classes="GlassWrapper"
+                    Margin="30,0,30,0">
+                    
+                    <TextBox
+                        x:Name="SearchBox"
+                        Classes="Clean"
+                        VerticalContentAlignment="Center"
+                        Padding="25,12"
+                        KeyUp="SearchBox_KeyUp"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        PlaceholderText="Search awesome games..." />
+                        
+                </Border>
+                
+                <StackPanel
+                    Grid.Column="2"
+                    Orientation="Horizontal"
+                    Spacing="20">
+                    
+                    <Border
+                        Classes="GlassWrapper">
+                        
+                        <Button
+                            Classes="Clean"
+                            Click="BtnShowInfo_Click"
+                            Padding="25,12"
+                            Cursor="Hand">
+                            
+                            <StackPanel
+                                Orientation="Horizontal"
+                                Spacing="10">
+                                
+                                <Path
+                                    Data="M11,18H13V16H11V18M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M12,6A4,4 0 0,0 8,10H10A2,2 0 0,1 12,8A2,2 0 0,1 14,10C14,12 11,11.75 11,15H13C13,12.75 16,12.5 16,10A4,4 0 0,0 12,6Z"
+                                    Fill="{DynamicResource Text_Light}"
+                                    Width="18"
+                                    Height="18"
+                                    Stretch="Uniform" />
+                                    
+                                <TextBlock
+                                    Text="GUIDE"
+                                    Foreground="{DynamicResource Text_Light}"
+                                    FontWeight="Black"
+                                    FontSize="16"
+                                    LetterSpacing="1"
+                                    VerticalAlignment="Center" />
+                                    
+                            </StackPanel>
+                            
+                        </Button>
+                        
+                    </Border>
+                    
+                    <Border
+                        Classes="GlassWrapper">
+                        
+                        <Button
+                            Classes="Clean"
+                            Click="BtnShowRanking_Click"
+                            Padding="25,12"
+                            Cursor="Hand">
+                            
+                            <StackPanel
+                                Orientation="Horizontal"
+                                Spacing="10">
+                                
+                                <Path
+                                    Data="M20.2,2H19.5H18C17.1,2 16,3 16,4H8C8,3 6.9,2 6,2H4.5H3.8H2V11C2,12 3,13 4,13H6.2C6.6,15 7.9,16.7 11,17V19.1C8.8,19.3 8,20.4 8,21.7V22H16V21.7C16,20.4 15.2,19.3 13,19.1V17C16.1,16.7 17.4,15 17.8,13H20C21,13 22,12 22,11V2H20.2M4,11V4H6V11H4M20,11H18V4H20V11Z"
+                                    Fill="{DynamicResource Text_Light}"
+                                    Width="18"
+                                    Height="18"
+                                    Stretch="Uniform" />
+                                    
+                                <TextBlock
+                                    Text="RANK"
+                                    Foreground="{DynamicResource Text_Light}"
+                                    FontWeight="Black"
+                                    FontSize="16"
+                                    LetterSpacing="1"
+                                    VerticalAlignment="Center" />
+                                    
+                            </StackPanel>
+                            
+                        </Button>
+                        
+                    </Border>
+                    
+                </StackPanel>
+                
+            </Grid>
+
+            <Grid
+                Grid.Row="1"
+                ColumnDefinitions="3*, 2*">
+                
+                <ListBox
+                    x:Name="GameListBox"
+                    Grid.Column="0"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Margin="0,0,20,0"
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                    ScrollViewer.VerticalScrollBarVisibility="Auto">
+                    
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            
+                            <UniformGrid
+                                Columns="3"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Top" />
+                                
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+                    
+                    <ListBox.ItemTemplate>
+                        <DataTemplate
+                            x:DataType="local:Game"
+                            x:CompileBindings="True">
+                            
+                            <Border
+                                Classes="GameCard"
+                                Width="160"
+                                Height="170"
+                                ClipToBounds="True">
+                                
+                                <Grid>
+                                    
+                                    <Image
+                                        Source="{Binding IconBitmap}"
+                                        Stretch="UniformToFill"
+                                        Opacity="0.9" />
+                                           
+                                    <Border
+                                        VerticalAlignment="Bottom"
+                                        Padding="15"
+                                        Height="90"
+                                        Background="#CC12121A">
+                                        
+                                        <StackPanel
+                                            VerticalAlignment="Bottom">
+                                            
+                                            <TextBlock
+                                                Text="{Binding Title}"
+                                                Foreground="{DynamicResource Text_Light}"
+                                                FontWeight="Black"
+                                                FontSize="14"
+                                                TextWrapping="Wrap"
+                                                MaxLines="2"
+                                                LineHeight="18" />
+                                            
+                                            <StackPanel
+                                                Orientation="Horizontal"
+                                                Margin="0,8,0,0"
+                                                Spacing="6">
+                                                
+                                                <TextBlock
+                                                    Text="PLAY"
+                                                    Foreground="{DynamicResource Text_Muted}"
+                                                    FontFamily="Nunito, sans-serif"
+                                                    FontSize="11"
+                                                    FontWeight="Bold"
+                                                    VerticalAlignment="Bottom" />
+                                                    
+                                                <TextBlock
+                                                    Text="{Binding PlayCount}"
+                                                    Foreground="{DynamicResource C_Cyan}"
+                                                    FontFamily="Nunito, sans-serif"
+                                                    FontSize="15"
+                                                    FontWeight="Black"
+                                                    VerticalAlignment="Bottom" />
+                                                    
+                                            </StackPanel>
+                                            
+                                        </StackPanel>
+                                        
+                                    </Border>
+                                    
+                                </Grid>
+                                
+                            </Border>
+                            
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                    
+                </ListBox>
+
+                <Border
+                    Grid.Column="1"
+                    Background="{DynamicResource Glass_Dark}"
+                    CornerRadius="30"
+                    Padding="30"
+                    BoxShadow="0 25 60 0 #A0000000"
+                    BorderBrush="{DynamicResource Border_Subtle}"
+                    BorderThickness="1"
+                    DataContext="{Binding #GameListBox.SelectedItem}"
+                    x:DataType="local:Game"
+                    x:CompileBindings="True">
+                    
+                    <Grid>
+                        
+                        <Grid.RowDefinitions>
+                            
+                            <RowDefinition
+                                Height="55*" />
+                                
+                            <RowDefinition
+                                Height="45*" />
+                                
+                            <RowDefinition
+                                Height="Auto" />
+                                
+                            <RowDefinition
+                                Height="Auto" />
+                                
+                        </Grid.RowDefinitions>
+                        
+                        <Border
+                            x:Name="PreviewBorder"
+                            Grid.Row="0"
+                            Background="#FF1A1A24"
+                            CornerRadius="20"
+                            Margin="0,0,0,20"
+                            ClipToBounds="True"
+                            BorderBrush="{DynamicResource Border_Subtle}"
+                            BorderThickness="1">
+                            
+                            <Grid>
+                                
+                                <Grid
+                                    IsVisible="{Binding HideWebView}">
+                                    
+                                    <Image
+                                        Source="{Binding IconBitmap}"
+                                        Stretch="UniformToFill"
+                                        Opacity="0.2" />
+                                        
+                                    <Image
+                                        Source="{Binding IconBitmap}"
+                                        Stretch="Uniform"
+                                        Margin="20" />
+                                        
+                                    <StackPanel
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        IsVisible="{Binding IconBitmap, Converter={x:Static ObjectConverters.IsNull}}">
+                                        
+                                        <TextBlock
+                                            Text="NO MEDIA FOUND"
+                                            Foreground="{DynamicResource Text_Muted}"
+                                            FontFamily="Nunito"
+                                            FontSize="16"
+                                            FontWeight="Black"
+                                            LetterSpacing="2"
+                                            HorizontalAlignment="Center" />
+                                            
+                                    </StackPanel>
+                                    
+                                </Grid>
+                                
+                                <NativeWebView
+                                    IsVisible="{Binding ShowWebView}"
+                                    Source="{Binding LocalFileUri}"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch" />
+                                    
+                            </Grid>
+                            
+                        </Border>
+
+                        <Grid
+                            Grid.Row="1"
+                            Margin="0,0,0,15">
+                            
+                            <Grid.RowDefinitions>
+                                
+                                <RowDefinition
+                                    Height="Auto" />
+                                    
+                                <RowDefinition
+                                    Height="*" />
+                                    
+                            </Grid.RowDefinitions>
+                            
+                            <TextBlock
+                                Grid.Row="0"
+                                Text="{Binding Title}"
+                                FontSize="28"
+                                FontWeight="Black"
+                                TextWrapping="Wrap"
+                                Margin="0,0,0,10"
+                                LineHeight="32">
+                                
+                                <TextBlock.Foreground>
+                                    
+                                    <LinearGradientBrush
+                                        StartPoint="0%,0%"
+                                        EndPoint="100%,100%">
+                                        
+                                        <GradientStop
+                                            Offset="0"
+                                            Color="#FF7EF1FC" />
+                                            
+                                        <GradientStop
+                                            Offset="1"
+                                            Color="#FFFC7EC6" />
+                                            
+                                    </LinearGradientBrush>
+                                    
+                                </TextBlock.Foreground>
+                                
+                            </TextBlock>
+                                       
+                            <ScrollViewer
+                                Grid.Row="1"
+                                Margin="0,0,0,0"
+                                Padding="0,0,10,0">
+                                
+                                <TextBlock
+                                    Text="{Binding Desc}"
+                                    Foreground="{DynamicResource Text_Light}"
+                                    FontWeight="SemiBold"
+                                    FontSize="14"
+                                    TextWrapping="Wrap"
+                                    LineHeight="22" />
+                                    
+                            </ScrollViewer>
+                            
+                        </Grid>
+                        
+                        <Grid
+                            Grid.Row="2">
+                            
+                            <Grid.ColumnDefinitions>
+                                
+                                <ColumnDefinition
+                                    Width="2*" />
+                                    
+                                <ColumnDefinition
+                                    Width="12" />
+                                    
+                                <ColumnDefinition
+                                    Width="1*" />
+                                    
+                            </Grid.ColumnDefinitions>
+                            
+                            <!-- ========================================================================= -->
+                            <!-- ★ PLAY NOW / NOW PLAYING 動的切り替えエリア -->
+                            <!-- ========================================================================= -->
+                            <Grid
+                                Grid.Column="0"
+                                IsVisible="{Binding CanPlay}">
+                                
+                                <!-- 🎮 通常時：PLAY NOW ボタン -->
+                                <Border
+                                    IsVisible="{Binding IsNotRunning}"
+                                    Classes="PrimaryAction">
+                                    
+                                    <Border.Background>
+                                        
+                                        <LinearGradientBrush
+                                            StartPoint="0%,0%"
+                                            EndPoint="100%,100%">
+                                            
+                                            <GradientStop
+                                                Offset="0"
+                                                Color="#FF7EF1FC" />
+                                                
+                                            <GradientStop
+                                                Offset="1"
+                                                Color="#FF0891B2" />
+                                                
+                                        </LinearGradientBrush>
+                                        
+                                    </Border.Background>
+                                    
+                                    <Button
+                                        Classes="Clean"
+                                        Click="BtnPlayGame_Click"
+                                        Height="40"
+                                        Cursor="Hand">
+                                        
+                                        <StackPanel
+                                            Orientation="Horizontal"
+                                            Spacing="8"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center">
+                                            
+                                            <Path
+                                                Data="M8,5.14V19.14L19,12.14L8,5.14Z"
+                                                Fill="{DynamicResource Text_DarkBase}"
+                                                Width="16"
+                                                Height="16"
+                                                Stretch="Uniform" />
+                                                
+                                            <TextBlock
+                                                Text="PLAY NOW"
+                                                Foreground="{DynamicResource Text_DarkBase}"
+                                                FontSize="16"
+                                                FontWeight="Black"
+                                                LetterSpacing="1" />
+                                                
+                                        </StackPanel>
+                                        
+                                    </Button>
+                                    
+                                </Border>
+                                
+                                <!-- ⏳ 起動中：NOW PLAYING ボタン (光彩を消し、三角を無くし、押せないUI) -->
+                                <Border
+                                    IsVisible="{Binding IsRunning}"
+                                    CornerRadius="99"
+                                    Background="#401E1E2C"
+                                    BorderBrush="{DynamicResource Border_Subtle}"
+                                    BorderThickness="1"
+                                    BoxShadow="0 2 8 0 #30000000">
+                                    
+                                    <Button
+                                        Classes="Clean"
+                                        IsEnabled="False"
+                                        Height="40">
+                                        
+                                        <TextBlock
+                                            Text="NOW PLAYING"
+                                            Foreground="{DynamicResource Text_Muted}"
+                                            FontSize="16"
+                                            FontWeight="Black"
+                                            LetterSpacing="2"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center" />
+                                            
+                                    </Button>
+                                    
+                                </Border>
+                                
+                            </Grid>
+
+                            <!-- DOCS Button -->
+                            <Border
+                                Grid.Column="2"
+                                IsVisible="{Binding HasReadme}"
+                                Background="{DynamicResource Glass_Dark_Hover}"
+                                CornerRadius="99"
+                                BoxShadow="0 8 20 0 #A0000000"
+                                BorderBrush="{DynamicResource Border_Subtle}"
+                                BorderThickness="1">
+                                
+                                <Button
+                                    Classes="Clean"
+                                    Click="BtnOpenReadme_Click"
+                                    Height="40"
+                                    Cursor="Hand">
+                                    
+                                    <StackPanel
+                                        Orientation="Horizontal"
+                                        Spacing="6"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                        
+                                        <Path
+                                            Data="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20Z"
+                                            Fill="{DynamicResource Text_Light}"
+                                            Width="14"
+                                            Height="14"
+                                            Stretch="Uniform" />
+                                            
+                                        <TextBlock
+                                            Text="DOCS"
+                                            Foreground="{DynamicResource Text_Light}"
+                                            FontSize="14"
+                                            FontWeight="Black" />
+                                            
+                                    </StackPanel>
+                                    
+                                </Button>
+                                
+                            </Border>
+
+                            <Border
+                                x:Name="LaunchingOverlay"
+                                Grid.Column="0"
+                                Grid.ColumnSpan="3"
+                                IsVisible="False"
+                                IsHitTestVisible="False"
+                                Background="#FF1E1E2C"
+                                CornerRadius="99"
+                                BoxShadow="0 10 30 0 #A0000000"
+                                BorderBrush="{DynamicResource Border_Subtle}"
+                                BorderThickness="1">
+                                
+                                <StackPanel
+                                    Orientation="Horizontal"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Spacing="10">
+                                    
+                                    <TextBlock
+                                        Text="LAUNCHING SYSTEM"
+                                        Foreground="{DynamicResource C_Cyan}"
+                                        FontSize="16"
+                                        FontWeight="Black"
+                                        LetterSpacing="2" />
+                                        
+                                    <TextBlock
+                                        Text="█"
+                                        Classes="BlinkingCursor"
+                                        Foreground="{DynamicResource C_Pink}"
+                                        FontSize="16" />
+                                        
+                                </StackPanel>
+                                
+                            </Border>
+                            
+                        </Grid>
+                        
+                        <!-- エラー発生時のポップアップ通知UI -->
+                        <Border
+                            Grid.Row="3"
+                            IsVisible="{Binding HasLaunchError}"
+                            Background="#40FF3366"
+                            CornerRadius="12"
+                            Padding="15"
+                            Margin="0,15,0,0"
+                            BorderBrush="#80FF3366"
+                            BorderThickness="1">
+                            
+                            <StackPanel
+                                Orientation="Horizontal"
+                                Spacing="10"
+                                HorizontalAlignment="Center">
+                                
+                                <TextBlock
+                                    Text="⚠"
+                                    Foreground="#FFFF3366"
+                                    FontSize="16"
+                                    FontWeight="Black"
+                                    VerticalAlignment="Center" />
+                                    
+                                <TextBlock
+                                    Text="ゲームの起動に失敗しました"
+                                    Foreground="#FFFFE5E5"
+                                    FontSize="13"
+                                    FontWeight="Bold"
+                                    TextWrapping="Wrap"
+                                    VerticalAlignment="Center" />
+                                    
+                            </StackPanel>
+                            
+                        </Border>
+                        
+                    </Grid>
+                    
+                </Border>
+                
+            </Grid>
+
+            <Grid
+                Grid.Row="2"
+                Margin="0,25,0,0"
+                ColumnDefinitions="*,Auto">
+                
+                <Button
+                    Grid.Column="0"
+                    Classes="Clean"
+                    Click="BtnToggleLowSpec_Click"
+                    Cursor="Hand"
+                    HorizontalAlignment="Left">
+                    
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Spacing="10">
+                        
+                        <Path
+                            x:Name="LowSpecIcon"
+                            Data="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,20C7.59,20 4,16.41 4,12C4,7.59 7.59,4 12,4C16.41,4 20,7.59 20,12C20,16.41 16.41,20 12,20M11,7H13V9H11V7M11,11H13V17H11V11Z"
+                            Fill="#FF7EF1FC"
+                            Width="16"
+                            Height="16"
+                            Stretch="Uniform" />
+                            
+                        <TextBlock
+                            x:Name="LowSpecModeText"
+                            Text="SYSTEM_MODE : HIGH PERFORMANCE"
+                            Foreground="#FFA0AAB2"
+                            FontFamily="Consolas"
+                            FontSize="14"
+                            FontWeight="Bold"
+                            VerticalAlignment="Center"
+                            LetterSpacing="2" />
+                            
+                    </StackPanel>
+                    
+                </Button>
+                           
+                <Border
+                    Grid.Column="1"
+                    Background="{DynamicResource Glass_Dark}"
+                    Padding="25,12"
+                    CornerRadius="99"
+                    BoxShadow="0 10 25 0 #80000000"
+                    BorderBrush="{DynamicResource Border_Subtle}"
+                    BorderThickness="1">
+                    
+                    <StackPanel
+                        Orientation="Horizontal"
+                        Spacing="30">
+                        
+                        <TextBlock
+                            Text="CPU READY"
+                            Foreground="{DynamicResource C_Cyan}"
+                            FontFamily="Consolas"
+                            FontSize="14"
+                            FontWeight="Black" />
+                            
+                        <TextBlock
+                            x:Name="AppMemText"
+                            Text="MEM 00 MB"
+                            Foreground="{DynamicResource C_Pink}"
+                            FontFamily="Consolas"
+                            FontSize="14"
+                            FontWeight="Black" />
+                            
+                    </StackPanel>
+                    
+                </Border>
+                
+            </Grid>
+            
+        </Grid>
+
+        <Border
+            x:Name="RankingModal"
+            Background="#CC0F0F15"
+            ZIndex="10"
+            IsVisible="False">
+            
+            <Border
+                Background="{DynamicResource Glass_Panel}"
+                CornerRadius="40"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Width="520"
+                Height="620"
+                Padding="45"
+                BoxShadow="0 30 60 0 #A0000000"
+                BorderBrush="{DynamicResource Border_Subtle}"
+                BorderThickness="1">
+                
+                <Grid
+                    RowDefinitions="Auto,*,Auto">
+                    
+                    <TextBlock
+                        Grid.Row="0"
+                        Text="TOP RANKING"
+                        FontSize="32"
+                        FontWeight="Black"
+                        HorizontalAlignment="Center"
+                        Margin="0,0,0,30"
+                        LetterSpacing="2">
+                        
+                        <TextBlock.Foreground>
+                            
+                            <LinearGradientBrush
+                                StartPoint="0%,0%"
+                                EndPoint="100%,100%">
+                                
+                                <GradientStop
+                                    Offset="0"
+                                    Color="#FFFCEC7E" />
+                                    
+                                <GradientStop
+                                    Offset="1"
+                                    Color="#FFFC7EC6" />
+                                    
+                            </LinearGradientBrush>
+                            
+                        </TextBlock.Foreground>
+                        
+                    </TextBlock>
+                    
+                    <ListBox
+                        x:Name="RankingListBox"
+                        Grid.Row="1"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        
+                        <ListBox.ItemTemplate>
+                            <DataTemplate
+                                x:DataType="local:Game"
+                                x:CompileBindings="True">
+                                
+                                <Border
+                                    Background="{DynamicResource Glass_Dark}"
+                                    CornerRadius="20"
+                                    Padding="20"
+                                    Margin="0,0,0,15"
+                                    BoxShadow="0 10 25 0 #80000000"
+                                    BorderBrush="{DynamicResource Border_Subtle}"
+                                    BorderThickness="1">
+                                    
+                                    <Grid
+                                        ColumnDefinitions="Auto,*,Auto">
+                                        
+                                        <Image
+                                            Grid.Column="0"
+                                            Source="{Binding IconBitmap}"
+                                            Width="55"
+                                            Height="55"
+                                            Margin="0,0,20,0"
+                                            Stretch="UniformToFill">
+                                            
+                                            <Image.Clip>
+                                                
+                                                <EllipseGeometry
+                                                    Rect="0,0,55,55" />
+                                                    
+                                            </Image.Clip>
+                                            
+                                        </Image>
+                                        
+                                        <TextBlock
+                                            Grid.Column="1"
+                                            Text="{Binding Title}"
+                                            Foreground="{DynamicResource Text_Light}"
+                                            FontSize="18"
+                                            FontWeight="Black"
+                                            VerticalAlignment="Center"
+                                            TextWrapping="Wrap"
+                                            LineHeight="24" />
+                                            
+                                        <StackPanel
+                                            Grid.Column="2"
+                                            Orientation="Horizontal"
+                                            VerticalAlignment="Center"
+                                            Margin="15,0,0,0">
+                                            
+                                            <TextBlock
+                                                Text="{Binding PlayCount}"
+                                                Foreground="{DynamicResource C_Cyan}"
+                                                FontSize="30"
+                                                FontWeight="Black"
+                                                FontFamily="Nunito" />
+                                                
+                                            <TextBlock
+                                                Text=" PT"
+                                                Foreground="{DynamicResource Text_Muted}"
+                                                FontSize="14"
+                                                FontWeight="Bold"
+                                                VerticalAlignment="Bottom"
+                                                Margin="4,0,0,6" />
+                                                
+                                        </StackPanel>
+                                        
+                                    </Grid>
+                                    
+                                </Border>
+                                
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        
+                    </ListBox>
+                    
+                    <Border
+                        Grid.Row="2"
+                        Classes="GlassWrapper"
+                        Margin="0,30,0,0">
+                        
+                        <Button
+                            Classes="Clean"
+                            Click="BtnCloseRanking_Click"
+                            Padding="0,22"
+                            Cursor="Hand">
+                            
+                            <TextBlock
+                                Text="CLOSE"
+                                Foreground="{DynamicResource Text_Light}"
+                                FontSize="20"
+                                FontWeight="Black"
+                                HorizontalAlignment="Center"
+                                LetterSpacing="2" />
+                                
+                        </Button>
+                        
+                    </Border>
+                    
+                </Grid>
+                
+            </Border>
+            
+        </Border>
+
+        <Border
+            x:Name="InfoModal"
+            Background="#CC0F0F15"
+            ZIndex="10"
+            IsVisible="False">
+            
+            <Border
+                Background="{DynamicResource Glass_Panel}"
+                CornerRadius="40"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Width="580"
+                Height="580"
+                Padding="45"
+                BoxShadow="0 30 60 0 #A0000000"
+                BorderBrush="{DynamicResource Border_Subtle}"
+                BorderThickness="1">
+                
+                <Grid
+                    RowDefinitions="Auto,*,Auto">
+                    
+                    <TextBlock
+                        Grid.Row="0"
+                        Text="SYSTEM GUIDE"
+                        FontSize="32"
+                        FontWeight="Black"
+                        HorizontalAlignment="Center"
+                        Margin="0,0,0,30"
+                        LetterSpacing="2">
+                        
+                        <TextBlock.Foreground>
+                            
+                            <LinearGradientBrush
+                                StartPoint="0%,0%"
+                                EndPoint="100%,100%">
+                                
+                                <GradientStop
+                                    Offset="0"
+                                    Color="#FF7EF1FC" />
+                                    
+                                <GradientStop
+                                    Offset="1"
+                                    Color="#FFFC7EC6" />
+                                    
+                            </LinearGradientBrush>
+                            
+                        </TextBlock.Foreground>
+                        
+                    </TextBlock>
+                    
+                    <ScrollViewer
+                        Grid.Row="1"
+                        Margin="0,0,-15,0"
+                        Padding="0,0,15,0">
+                        
+                        <StackPanel
+                            Spacing="30"
+                            Margin="10,0,10,0">
+                            
+                            <StackPanel
+                                Spacing="12">
+                                
+                                <TextBlock
+                                    Text="◆ 基本の遊び方"
+                                    Foreground="{DynamicResource C_Pink}"
+                                    FontWeight="Black"
+                                    FontSize="20" />
+                                    
+                                <TextBlock
+                                    Text="1. 画面左側のゲームリストから、遊びたい作品を自由に選択します。"
+                                    Foreground="{DynamicResource Text_Light}"
+                                    FontWeight="SemiBold"
+                                    FontSize="15"
+                                    TextWrapping="Wrap"
+                                    LineHeight="24" />
+                                    
+                                <TextBlock
+                                    Text="2. 画面右側に作品の詳細情報やプレビューが表示されます。"
+                                    Foreground="{DynamicResource Text_Light}"
+                                    FontWeight="SemiBold"
+                                    FontSize="15"
+                                    TextWrapping="Wrap"
+                                    LineHeight="24" />
+                                    
+                                <TextBlock
+                                    Text="3. 「PLAY NOW」ボタンをクリックするとシステムが起動します！"
+                                    Foreground="{DynamicResource Text_Light}"
+                                    FontWeight="SemiBold"
+                                    FontSize="15"
+                                    TextWrapping="Wrap"
+                                    LineHeight="24" />
+                                    
+                            </StackPanel>
+                            
+                            <StackPanel
+                                Spacing="12">
+                                
+                                <TextBlock
+                                    Text="◆ 便利な機能"
+                                    Foreground="{DynamicResource C_Cyan}"
+                                    FontWeight="Black"
+                                    FontSize="20" />
+                                    
+                                <TextBlock
+                                    Text="・検索バー：タイトルの一部を入力して作品を素早く絞り込めます。"
+                                    Foreground="{DynamicResource Text_Light}"
+                                    FontWeight="SemiBold"
+                                    FontSize="15"
+                                    TextWrapping="Wrap"
+                                    LineHeight="24" />
+                                    
+                                <TextBlock
+                                    Text="・RANK：人気の作品ランキングを確認できます。"
+                                    Foreground="{DynamicResource Text_Light}"
+                                    FontWeight="SemiBold"
+                                    FontSize="15"
+                                    TextWrapping="Wrap"
+                                    LineHeight="24" />
+                                    
+                                <TextBlock
+                                    Text="・SYSTEM_MODE：左下のボタンで軽量化(ECO)モードに切り替え可能です。"
+                                    Foreground="{DynamicResource Text_Light}"
+                                    FontWeight="SemiBold"
+                                    FontSize="15"
+                                    TextWrapping="Wrap"
+                                    LineHeight="24" />
+                                    
+                            </StackPanel>
+                            
+                        </StackPanel>
+                        
+                    </ScrollViewer>
+                    
+                    <Border
+                        Grid.Row="2"
+                        Classes="GlassWrapper"
+                        Margin="0,30,0,0">
+                        
+                        <Button
+                            Classes="Clean"
+                            Click="BtnCloseInfo_Click"
+                            Padding="0,22"
+                            Cursor="Hand">
+                            
+                            <TextBlock
+                                Text="GOT IT!"
+                                Foreground="{DynamicResource Text_Light}"
+                                FontSize="20"
+                                FontWeight="Black"
+                                HorizontalAlignment="Center"
+                                LetterSpacing="2" />
+                                
+                        </Button>
+                        
+                    </Border>
+                    
+                </Grid>
+                
+            </Border>
+            
+        </Border>
+
+        <Grid
+            x:Name="LoadingScreen"
+            Background="#FF12121A"
+            ZIndex="15"
+            IsVisible="False">
+            
+            <StackPanel
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+                
+                <TextBlock
+                    Text="SYSTEM AWAKENING"
+                    Foreground="{DynamicResource C_Cyan}"
+                    FontSize="40"
+                    FontWeight="Black"
+                    HorizontalAlignment="Center"
+                    Margin="0,0,0,50"
+                    LetterSpacing="8" />
+                    
+                <Border
+                    Background="{DynamicResource Glass_Panel}"
+                    CornerRadius="30"
+                    Padding="60,50"
+                    Width="750"
+                    BoxShadow="0 25 60 0 #A0000000"
+                    BorderBrush="{DynamicResource Border_Subtle}"
+                    BorderThickness="1">
+                    
+                    <StackPanel>
+                        
+                        <StackPanel
+                            Orientation="Horizontal"
+                            MinHeight="120">
+                            
+                            <TextBlock
+                                x:Name="TerminalContent"
+                                Foreground="{DynamicResource Text_Light}"
+                                FontFamily="Consolas"
+                                FontSize="18"
+                                FontWeight="Black"
+                                LineHeight="40" />
+                                
+                            <TextBlock
+                                Classes="BlinkingCursor"
+                                Text="█"
+                                Foreground="{DynamicResource C_Pink}"
+                                FontFamily="Consolas"
+                                FontSize="18"
+                                Margin="10,0,0,0" />
+                                
+                        </StackPanel>
+                        
+                        <ProgressBar
+                            x:Name="BootProgressBar"
+                            Margin="0,40,0,0"
+                            Height="12"
+                            Value="0"
+                            Maximum="100"
+                            Foreground="{DynamicResource C_Pink}"
+                            Background="#FF2A2A3C"
+                            CornerRadius="99" />
+                            
+                    </StackPanel>
+                    
+                </Border>
+                
+            </StackPanel>
+            
+        </Grid>
+
+        <Grid
+            x:Name="HomeScreen"
+            ZIndex="20">
+            
+            <local:MatrixBackground
+                x:Name="MatrixBg"
+                Opacity="0.3" />
+                
+            <StackPanel
+                x:Name="TitleContainer"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center">
+                
+                <Border
+                    Background="{DynamicResource Glass_Panel}"
+                    CornerRadius="50"
+                    Padding="100,70"
+                    HorizontalAlignment="Center"
+                    BoxShadow="0 40 80 0 #C0000000"
+                    BorderBrush="{DynamicResource Border_Subtle}"
+                    BorderThickness="1">
+                    
+                    <StackPanel>
+                        
+                        <TextBlock
+                            Text="SYSTEM_READY_FOR_BOOT"
+                            Foreground="{DynamicResource Text_Muted}"
+                            FontFamily="Consolas"
+                            FontSize="14"
+                            FontWeight="Black"
+                            LetterSpacing="4"
+                            HorizontalAlignment="Center"
+                            Margin="0,0,0,30" />
+                            
+                        <TextBlock
+                            Text="GAME"
+                            Foreground="{DynamicResource Text_Light}"
+                            FontSize="120"
+                            FontWeight="Black"
+                            HorizontalAlignment="Center"
+                            LetterSpacing="3"
+                            Margin="0,0,0,-15" />
+                            
+                        <TextBlock
+                            Text="HAPPY SET"
+                            FontSize="120"
+                            FontWeight="Black"
+                            HorizontalAlignment="Center"
+                            Margin="0,0,0,50"
+                            LetterSpacing="1">
+                            
+                            <TextBlock.Foreground>
+                                
+                                <LinearGradientBrush
+                                    StartPoint="0%,0%"
+                                    EndPoint="100%,100%">
+                                    
+                                    <GradientStop
+                                        Offset="0"
+                                        Color="#FF7EF1FC" />
+                                        
+                                    <GradientStop
+                                        Offset="1"
+                                        Color="#FFFC7EC6" />
+                                        
+                                </LinearGradientBrush>
+                                
+                            </TextBlock.Foreground>
+                            
+                        </TextBlock>
+                        
+                        <StackPanel
+                            Spacing="15">
+                            
+                            <Border
+                                CornerRadius="99"
+                                BoxShadow="0 20 45 0 #80FC7EC6"
+                                Width="420"
+                                Height="90"
+                                HorizontalAlignment="Center">
+                                
+                                <Border.Styles>
+                                    
+                                    <Style
+                                        Selector="Border">
+                                        <Setter
+                                            Property="Transitions">
+                                            <Transitions>
+                                                <BoxShadowsTransition
+                                                    Property="BoxShadow"
+                                                    Duration="0:0:0.2" />
+                                            </Transitions>
+                                        </Setter>
+                                    </Style>
+                                    
+                                    <Style
+                                        Selector="Border:pointerover">
+                                        <Setter
+                                            Property="BoxShadow"
+                                            Value="0 25 55 0 #A0FC7EC6" />
+                                    </Style>
+                                    
+                                </Border.Styles>
+                                
+                                <Border.Background>
+                                    
+                                    <LinearGradientBrush
+                                        StartPoint="0%,0%"
+                                        EndPoint="100%,100%">
+                                        
+                                        <GradientStop
+                                            Offset="0"
+                                            Color="#FFFC7EC6" />
+                                            
+                                        <GradientStop
+                                            Offset="1"
+                                            Color="#FF7EF1FC" />
+                                            
+                                    </LinearGradientBrush>
+                                    
+                                </Border.Background>
+                                
+                                <Button
+                                    Classes="Clean"
+                                    Click="BtnSystemStart_Click"
+                                    Cursor="Hand">
+                                    
+                                    <StackPanel
+                                        Orientation="Horizontal"
+                                        Spacing="18"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center">
+                                        
+                                        <TextBlock
+                                            Text="ENTER SYSTEM"
+                                            Foreground="#FF12121A"
+                                            FontSize="26"
+                                            FontWeight="Black"
+                                            LetterSpacing="4" />
+                                            
+                                        <Path
+                                            Data="M4,11V13H16L10.5,18.5L11.92,19.92L19.84,12L11.92,4.08L10.5,5.5L16,11H4Z"
+                                            Fill="#FF12121A"
+                                            Width="28"
+                                            Height="28"
+                                            Stretch="Uniform" />
+                                            
+                                    </StackPanel>
+                                    
+                                </Button>
+                                
+                            </Border>
+
+                        </StackPanel>
+                        
+                    </StackPanel>
+                    
+                </Border>
+                
+            </StackPanel>
+            
+            <StackPanel
+                x:Name="BootTerminal"
+                IsVisible="False"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Margin="50">
+                
+                <TextBlock
+                    x:Name="HomeTerminalContent"
+                    Foreground="{DynamicResource C_Cyan}"
+                    FontFamily="Consolas"
+                    FontSize="14"
+                    LineHeight="24" />
+                    
+                <TextBlock
+                    Classes="BlinkingCursor"
+                    Text="█"
+                    Foreground="{DynamicResource C_Pink}"
+                    FontFamily="Consolas"
+                    FontSize="14" />
+                    
+            </StackPanel>
+            
+        </Grid>
+        
+        <Border
+            ZIndex="100"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Margin="20"
+            CornerRadius="99"
+            Background="#CC1E1E2C"
+            BorderBrush="{DynamicResource Border_Subtle}"
+            BorderThickness="1"
+            Width="40"
+            Height="40">
+            
+            <Border.Styles>
+                
+                <Style
+                    Selector="Border:pointerover">
+                    <Setter
+                        Property="BorderBrush"
+                        Value="#FFFC7EC6" />
+                    <Setter
+                        Property="Background"
+                        Value="#FF2A2A3C" />
+                </Style>
+                
+            </Border.Styles>
+            
+            <Button
+                Classes="Clean"
+                Click="BtnQuit_Click"
+                Cursor="Hand"
+                ToolTip.Tip="QUIT SYSTEM">
+                
+                <Path
+                    Data="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"
+                    Fill="{DynamicResource Text_Muted}"
+                    Width="16"
+                    Height="16"
+                    Stretch="Uniform" />
+                    
+            </Button>
+            
+        </Border>
+        
+    </Grid>
+    
+</Window>

@@ -1,0 +1,5 @@
+bin/
+obj/
+games/
+*.exe
+.DS_Store
